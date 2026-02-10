@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Pauli ❤️ | Una Pregunta Especial</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:'Poppins',sans-serif;
+overflow:hidden;
+height:100vh;
+background:#000;
+}
+
+.background{
+position:fixed;
+width:100%;
+height:100%;
+background-image:url('fondo.jpg');
+background-size:cover;
+background-position:center;
+filter:brightness(.45) contrast(1.1);
+z-index:-4;
+transform:scale(1.05);
+animation:slowZoom 25s ease-in-out infinite alternate;
+}
+
+@keyframes slowZoom{
+from{transform:scale(1.05)}
+to{transform:scale(1.15)}
+}
+
+.overlay{
+position:fixed;
+width:100%;
+height:100%;
+background:radial-gradient(circle at center,rgba(255,192,203,.25),rgba(0,0,0,.65));
+z-index:-3;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-2;
+}
+
+.container{
+width:min(92%,680px);
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.18);
+backdrop-filter:blur(18px);
+padding:55px 35px;
+border-radius:34px;
+text-align:center;
+box-shadow:0 40px 120px rgba(0,0,0,.6);
+animation:fadeUp 1.6s ease;
+}
+
+@keyframes fadeUp{
+from{opacity:0;transform:translate(-50%,-40%)}
+to{opacity:1;transform:translate(-50%,-50%)}
+}
+
+h1{
+font-family:'Playfair Display',serif;
+font-size:clamp(2.4rem,4vw,3.3rem);
+color:white;
+margin-bottom:14px;
+letter-spacing:.5px;
+}
+
+.subtitle{
+color:rgba(255,255,255,.85);
+margin-bottom:28px;
+font-weight:300;
+line-height:1.6;
+}
+
+.countdown{
+font-size:1.6rem;
+font-weight:600;
+color:#ffd6e7;
+margin:25px 0;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.06)}
+100%{transform:scale(1)}
+}
+
+button{
+border:none;
+padding:15px 30px;
+border-radius:70px;
+font-size:1rem;
+cursor:pointer;
+margin:10px;
+transition:.25s;
+font-weight:600;
+letter-spacing:.5px;
+}
+
+#startBtn{
+background:linear-gradient(135deg,#ff2e88,#ff6fa5);
+color:white;
+box-shadow:0 15px 40px rgba(255,46,136,.6);
+}
+
+#startBtn:hover{transform:scale(1.1)}
+
+.gallery{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+gap:28px;
+padding:60px;
+background:linear-gradient(135deg,#ffd1dc,#ff9ebb);
+z-index:30;
+animation:fade 1s;
+overflow:auto;
+align-content:start;
+}
+
+.gallery img{
+width:100%;
+aspect-ratio:3/4;
+object-fit:cover;
+border-radius:24px;
+box-shadow:0 25px 60px rgba(0,0,0,.35);
+transition:.4s;
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+}
+
+.final-scene, .yes-scene{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+animation:cinematic 3s ease;
+}
+
+.final-scene{
+background:url('final.jpg');
+z-index:50;
+}
+
+.yes-scene{
+background:url('final.jpg');
+z-index:999;
+}
+
+.final-overlay{
+position:absolute;
+width:100%;
+height:100%;
+background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.25));
+pointer-events:none;
+}
+
+.final-text{
+position:relative;
+color:white;
+font-family:'Playfair Display',serif;
+font-size:clamp(2.4rem,5vw,4.2rem);
+text-align:center;
+max-width:900px;
+padding:20px;
+line-height:1.4;
+animation:rise 3s ease;
+}
+
+.final-buttons{
+position:relative;
+margin-top:30px;
+display:flex;
+justify-content:center;
+gap:20px;
+}
+
+#finalYes{
+background:linear-gradient(135deg,#ff2e88,#ff6fa5);
+color:white;
+box-shadow:0 15px 40px rgba(255,46,136,.7);
+font-size:1.2rem;
+padding:18px 40px;
+}
+
+#finalNo{
+background:white;
+color:#666;
+position:relative;
+}
+
+@keyframes cinematic{
+from{opacity:0;transform:scale(1.25)}
+to{opacity:1;transform:scale(1)}
+}
+
+@keyframes rise{
+from{opacity:0;transform:translateY(60px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:600px){
+.container{padding:45px 22px}
+h1{font-size:2rem}
+.gallery{padding:20px}
+.gallery img{height:200px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="background"></div>
+<div class="overlay"></div>
+<canvas id="particles"></canvas>
+
+<audio id="music" loop>
+<source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+<h1>Mi amor… tengo algo muy importante para decirte</h1>
+<p class="subtitle">Quiero invitarte a vivir un momento especial conmigo. Preparé esto porque sos una de las personas más importantes de mi vida.</p>
+
+<button id="startBtn">Quiero ver ❤️</button>
+</div>
+
+<script>
+
+// Wait for DOM to avoid null errors
+document.addEventListener('DOMContentLoaded',()=>{
+
+// MUSIC
+ document.body.addEventListener('click',()=>{
+ document.getElementById('music').play().catch(()=>{});
+ },{once:true});
+
+const startBtn=document.getElementById('startBtn');
+console.assert(startBtn,'Start button should exist');
+
+if(startBtn){
+startBtn.addEventListener('click',showGallery);
+}
+
+});
+
+// COUNTDOWN FUNCTION (SAFE)
+const targetDate=new Date("Feb 14, 2026 00:00:00").getTime();
+let countdownInterval=null;
+
+function startCountdown(){
+const countdownEl=document.getElementById('countdown');
+if(!countdownEl) return;
+
+if(countdownInterval) clearInterval(countdownInterval);
+
+countdownInterval=setInterval(()=>{
+const now=new Date().getTime();
+const diff=targetDate-now;
+
+const d=Math.floor(diff/(1000*60*60*24));
+const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+const m=Math.floor((diff%(1000*60*60))/(1000*60));
+
+countdownEl.innerHTML=`Faltan ${d} días ${h}h ${m}m ❤️`;
+},1000);
+}
+
+function showGallery(){
+// Prevent duplicate galleries
+if(document.querySelector('.gallery')) return;
+
+const gallery=document.createElement('div');
+gallery.className='gallery';
+
+const title=document.createElement('h2');
+title.innerText='Cada recuerdo con vos es mi favorito ❤️';
+title.style.gridColumn='1/-1';
+title.style.textAlign='center';
+title.style.fontFamily='Playfair Display';
+title.style.color='#b30059';
+
+gallery.appendChild(title);
+
+const photos=['amor1.jpg','amor2.jpg','amor3.jpg','amor4.jpg','amor5.jpg','amor6.jpg','amor7.jpg','amor8.jpg'];
+
+photos.forEach(src=>{
+const img=document.createElement('img');
+img.src=src;
+img.loading='lazy';
+gallery.appendChild(img);
+});
+
+// BOTÓN PARA CONTINUAR
+const nextBtn=document.createElement('button');
+nextBtn.innerText='Continuar ❤️';
+nextBtn.style.gridColumn='1/-1';
+nextBtn.style.justifySelf='center';
+nextBtn.style.marginTop='20px';
+nextBtn.style.background='linear-gradient(135deg,#ff2e88,#ff6fa5)';
+nextBtn.style.color='white';
+nextBtn.style.boxShadow='0 15px 40px rgba(255,46,136,.5)';
+nextBtn.style.fontSize='1.1rem';
+nextBtn.style.padding='16px 36px';
+
+nextBtn.addEventListener('click',()=>{
+showFinalScene();
+gallery.remove();
+});
+
+gallery.appendChild(nextBtn);
+
+document.body.appendChild(gallery);
+}
+
+function showFinalScene(){
+const final=document.createElement('div');
+final.className='final-scene';
+
+final.innerHTML=`
+<div class="final-overlay"></div>
+<div class="final-text">
+Aunque no necesito momentos perfectos, solo que sean con vos.
+<br><br>
+Ahora sí...
+<br><br>
+¿Querés ser mi San Valentín?
+
+<div class="countdown" id="countdown"></div>
+
+<div class="final-buttons">
+<button id="finalYes">SÍ ❤️</button>
+<button id="finalNo">No</button>
+</div>
+
+</div>`;
+
+document.body.appendChild(final);
+
+startCountdown();
+
+const finalYes=document.getElementById('finalYes');
+const finalNo=document.getElementById('finalNo');
+let scale=1;
+
+console.assert(finalYes,'Yes button should exist');
+console.assert(finalNo,'No button should exist');
+
+finalNo.addEventListener('mouseover',()=>{
+finalNo.style.left=Math.random()*70+"vw";
+finalNo.style.top=Math.random()*70+"vh";
+scale+=.25;
+finalYes.style.transform=`scale(${scale})`;
+});
+
+finalYes.addEventListener('click',finalTextCelebrate);
+}
+
+function finalTextCelebrate(){
+const scene=document.createElement('div');
+scene.className='yes-scene';
+
+scene.innerHTML=`
+<div class="final-overlay"></div>
+<div class="final-text">
+<br><br>
+Prometo hacer de este San Valentín un día especial.
+<br><br>
+<br><br>
+Tu novio que te ama, Facu ❤️
+</div>`;
+
+document.body.appendChild(scene);
+}
+
+// BASIC TESTS
+console.assert(typeof showGallery === 'function','showGallery should exist');
+console.assert(typeof showFinalScene === 'function','showFinalScene should exist');
+console.assert(typeof finalTextCelebrate === 'function','finalTextCelebrate should exist');
+
+// PARTICLES
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<70;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2+1,
+s:Math.random()*1+.2
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle='rgba(255,255,255,.7)';
+
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+p.y-=p.s;
+if(p.y<0)p.y=canvas.height;
+});
+
+requestAnimationFrame(draw);
+}
+
+draw();
+
+</script>
+</body>
+</html>
